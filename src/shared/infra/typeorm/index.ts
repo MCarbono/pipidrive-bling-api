@@ -30,11 +30,10 @@ async function getConnection(){
             entities: [Deal],
             useNewUrlParser: true,
             useUnifiedTopology: true,
+            authSource: "admin"
         }
     );
     return connection
 }
-
-
 
 export default getConnection;

@@ -1,12 +1,12 @@
-import { Column, Entity, ObjectIdColumn, ObjectID } from "typeorm";
+import { Column, Entity, ObjectIdColumn, ObjectID, CreateDateColumn } from "typeorm";
 
-@Entity()
+@Entity('Deals')
 class Deal{
 
     @ObjectIdColumn()
     _id?: ObjectID;
 
-    @Column()
+    @CreateDateColumn()
     date?: Date;
 
     @Column()

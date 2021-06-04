@@ -1,7 +1,10 @@
 import { Router } from 'express';
+import { DealController } from '../../../../controller/DealController';
 
 const routes = Router();
 
-routes.post('/deal', createDealController.handle);
+const dealController = new DealController();
+
+routes.get('/deals', dealController.handle)
 
 export { routes}

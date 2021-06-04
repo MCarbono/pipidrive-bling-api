@@ -7,15 +7,12 @@ import Bling from '../shared/infra/services/bling';
 import { dto } from '../dtos/pipedriveToBlingDTO';
 import { Deal } from '../entities/Deal';
 
-import { getMongoManager } from "typeorm";
-
-
+import { Connection } from 'typeorm';
 
 async function process(){  
     try {
-       await connection();
-       const manager = getMongoManager('mongodb_connection')
-   
+       const conn: Connection = await connection();
+
        const deals = await Pipedrive.getDeals()
        
        for(const deal of deals){
@@ -24,7 +21,7 @@ async function process(){
                console.log(JSON.stringify(response, null, 4))
    
                const mongoDeal = new Deal(parseFloat(deal.value))
-               await manager.save(mongoDeal)
+               await conn.mongoManager.save(mongoDeal)
            } catch(err) {
                console.log(err)
            }
@@ -35,7 +32,7 @@ async function process(){
    }
 }
 
-export default cron.schedule('* * * * * *', process, {
+export default cron.schedule('*/1 * * * *', process, {
     scheduled: false
 })
 
