@@ -1,19 +1,40 @@
-import { createConnections } from 'typeorm';
+import { createConnection, getConnectionManager } from 'typeorm';
+import { Deal } from '../../../entities/Deal';
 
-import { dbConnections, server } from './config/index';
+import config from '../../../config';
 
-const connection = createConnections([
-    {
-        name: dbConnections.mongo.name,
-        type: 'mongodb',
-        url: dbConnections.mongo.conn,
-        username: "root",
-        password: "root",
-        entities: [],
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        synchronize: server.env === 'dev',
-    }
-]);
+const connectionManager = getConnectionManager();
 
-export default connection;
+async function getConnection(){
+    const name = "mongodb_connection";
+
+    if (connectionManager.has(name)) {
+        const connection = connectionManager.get(name);
+
+        if (!connection.isConnected) {
+            await connection.connect();
+        }
+           
+        return connection;
+      }
+
+    const connection = await createConnection(
+        {
+            name,
+            type: 'mongodb',
+            host: config.database.host,
+            username: config.database.username,
+            password: config.database.password,
+            port: Number(config.database.port),
+            database: config.database.database,
+            entities: [Deal],
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        }
+    );
+    return connection
+}
+
+
+
+export default getConnection;

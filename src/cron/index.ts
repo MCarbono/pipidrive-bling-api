@@ -1,9 +1,9 @@
-import getData from '../jobs/getData'
+import processDeals from '../jobs/processDeals'
 
 class ManagerCron {
     jobs: any;
     constructor(){
-        this.jobs = [getData]
+        this.jobs = [processDeals]
     }
 
     run(){
