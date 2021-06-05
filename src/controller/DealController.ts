@@ -1,22 +1,28 @@
 import { Request, Response } from 'express';
 import { Deal } from "../entities/Deal";
 import getConnection from '../shared/infra/typeorm';
+import _ from 'lodash';
 
 class DealController {
     async handle(request: Request, response: Response): Promise<Deal[]>{
         const connection = await getConnection()
-
-        const teste = await connection.mongoManager.find(Deal)
         
-        /**
-         *  $group: {
-                _id: "$date",
-                total: {$sum: "$amount"},
-                count: {$sum: 1},
-            }
-         * */
+        const deals = await connection.mongoManager.find(Deal)
+        
+        const groupByDay = _.groupBy(deals, 'date')
 
-        return response.json(teste);
+        const groupByDayTotalAmount = [];
+        for(const [key, value] of Object.entries(groupByDay)){
+
+            const total = value.reduce((acc, { amount }) => {
+                acc += amount;
+                return acc;
+            }, 0)
+            
+            groupByDayTotalAmount.push({ day: new Date(key).toJSON(), total })
+        }
+
+        response.json(groupByDayTotalAmount);
     }
 }
 

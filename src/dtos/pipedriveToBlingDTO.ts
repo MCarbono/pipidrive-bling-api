@@ -16,7 +16,7 @@ function dto(deal: any) {
                 <vlr_unit>${deal.value}</vlr_unit>
             </item>
         </itens>
-        <obs>16 Deal creator ${deal.creator_user_id.name}</obs>
+        <obs>17 Deal creator ${deal.creator_user_id.name}</obs>
     </pedido>
 `
 }
